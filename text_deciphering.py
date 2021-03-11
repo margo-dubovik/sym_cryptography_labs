@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 
-f = open(r'C:\Users\Alex\MARGO\crypto_labs\lab2\var7_1.txt', 'r', encoding='utf8', errors='ignore')
+f = open(r'C:\Users\Alex\MARGO\crypto_labs\lab2\var7.txt', 'r', encoding='utf8', errors='ignore')
 text = f.read()
 f.close()
 
