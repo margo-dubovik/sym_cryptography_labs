@@ -23,5 +23,16 @@ def plot_d(d):
     plt.show()
 
 
+def y_to_blocks(y):
+    y_blocks = []
+    for i in range(0, len(y), r):
+        y_i = y[i: i + r]
+        y_blocks.append(y_i)
+    return y_blocks
+
+
 d = find_r(text)
 plot_d(d)
+r = 15  # found from plot
+
+Y = y_to_blocks(text)  # ciphertext divided into blocks length=r
