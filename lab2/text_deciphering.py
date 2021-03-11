@@ -126,6 +126,7 @@ print("key 1:\n", key_numbers_1)
 key_word_1 = num_to_letter(key_numbers_1)
 print(key_word_1)
 
+
 ### визначення символів ключа за допомогою функції М_і(g)
 
 key_numbers_2 = find_key() #key letters`numbers
