@@ -116,6 +116,7 @@ freqs = letter_freqs(Y) #freqs of letters of block
 most_freq = find_most_freq(freqs) #indexes of most frequent letters of the block
 print("max_let_ind=",most_freq)
 
+
 ### визначення символів ключа прирівнюючи найчастіші літери в мові
 # "o" is most frequent in russian. position:14
 m = 32
