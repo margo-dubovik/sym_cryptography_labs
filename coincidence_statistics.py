@@ -25,14 +25,38 @@ def plot_d(d):
 
 def y_to_blocks(y):
     y_blocks = []
-    for i in range(0, len(y), r):
-        y_i = y[i: i + r]
+    for i in range(0, r):
+        y_i = y[i:: r]
         y_blocks.append(y_i)
     return y_blocks
+
+def letter_freqs(y):
+    fr = []
+    for j in range(len(Y)):
+        fr_j = []
+        for i in range(0,32):
+            fr_j.append(Y[j].count(ru_alph[i]))
+        fr.append(fr_j)
+    return fr
+
+
+def find_most_freq(fr):
+    max_let = []  #indexes of most frequent letters of the block
+    for i in range(len(fr)):
+        max_let.append(freqs[i].index(max(fr[i])))
+    return max_let
+
+ru_alph = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й','к', 'л', 'м', 'н', 'о', 'п',
+           'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ','ы', 'ь', 'э', 'ю', 'я']
 
 
 d = find_r(text)
 plot_d(d)
 r = 15  # found from plot
 
-Y = y_to_blocks(text)  # ciphertext divided into blocks length=r
+Y = y_to_blocks(text) #ciphertext divided into blocks of symbols with step r
+freqs = letter_freqs(Y) #freqs of letters of block
+
+most_freq = find_most_freq(freqs) #indexes of most frequent letters of the block
+print("max_let_ind=",most_freq)
+
