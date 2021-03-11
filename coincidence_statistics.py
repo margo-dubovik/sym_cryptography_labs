@@ -46,6 +46,19 @@ def find_most_freq(fr):
         max_let.append(freqs[i].index(max(fr[i])))
     return max_let
 
+def find_key_letter(mas):
+    k = []
+    for i in range(len(mas)):
+        k_i = (mas[i] - 14) % m
+        k.append(k_i)
+    return k
+
+def num_to_letter(y):
+    word = []
+    for item in y:
+        word.append(ru_alph[item])
+    return word
+
 ru_alph = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й','к', 'л', 'м', 'н', 'о', 'п',
            'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ','ы', 'ь', 'э', 'ю', 'я']
 
@@ -60,3 +73,13 @@ freqs = letter_freqs(Y) #freqs of letters of block
 most_freq = find_most_freq(freqs) #indexes of most frequent letters of the block
 print("max_let_ind=",most_freq)
 
+#визначення символів ключа прирівнюючи найчастіші літери в мові
+# "o" is most frequent in russian. position:14
+m = 32
+
+key_numbers = find_key_letter(most_freq)
+print(key_numbers) #key letters`numbers
+
+
+key = num_to_letter(key_numbers)
+print(key)
