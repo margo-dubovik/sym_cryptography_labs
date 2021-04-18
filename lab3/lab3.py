@@ -1,5 +1,8 @@
 import math
 from textwrap import wrap
+from itertools import combinations
+
+m = 31
 
 # ъ -> ь
 ru_alph = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п',
@@ -11,7 +14,7 @@ ru_alph = ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л
 #               'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ','ы', 'э', 'ю', 'я']
 
 ##### finding modular multiplicative inverse & linear congruences solving
-def inv_by_mod(a, m): #finding modular multiplicative inverse
+def inv_by_mod(a, m):
     def gcdExtended(a, b):
         if a == 0:
             return b, 0, 1
@@ -21,25 +24,28 @@ def inv_by_mod(a, m): #finding modular multiplicative inverse
         return gcd, x, y
 
     gcd, x, y = gcdExtended(a, m)
-    d = 0
     if gcd == 1:
         if x < 0:
             d = m + x
         else:
             d = x % m
     else:
-        d = 0; print("wrong numbers")
+        d = -1; print("wrong numbers")
     return d
 
 
-def congr(a, b, n):  # linear congruences solving. a*x = b (mod n)
+def congr(a, b, n):
     d = math.gcd(a, n)
+    if d < 0:
+        x = None;
+        print("there are no solutions");
+        return x
     if d == 1:
         t = inv_by_mod(a, n)
         x = [(b * t) % n]
     else:
         if b % d != 0:
-            x = [0]; print("there are no solutions"); return x
+            x = None; print("there are no solutions"); return x
         else:
             a1 = a // d
             b1 = b // d
@@ -51,7 +57,8 @@ def congr(a, b, n):  # linear congruences solving. a*x = b (mod n)
     return x
 
 
-def find_most_fr_bi(num): #finding 5 most frequent bigrams in ciphertext
+###### finding 5 most frequent bigrams in ciphertext
+def find_most_fr_bi(num):  # finding 5 most frequent bigrams in ciphertext
     num = num + ".txt"
     f = open(f"for_test\{num}", 'r', encoding='utf8', errors='ignore')
     text = f.read()
@@ -97,7 +104,55 @@ def find_most_fr_bi(num): #finding 5 most frequent bigrams in ciphertext
     return res
 
 
+###### converting bigrams to numbers
+def bigr_to_num(bigr):
+    i = ru_alph.index(bigr[0])
+    j = ru_alph.index(bigr[1])
+    num = i * m + j
+    return num
+
+
+def list_bigr_to_num(lst):
+    res = {}
+    res_num = []
+    for item in lst:
+        res[item] = bigr_to_num(item)
+        res_num.append(bigr_to_num(item))
+    return res, res_num
+
+####### iterating over all possible pairs (X,X**)&(Y,Y**) and finding all possible solutions for them
+def find_key_candidates(x_pairs, y_pairs):
+    ans_dict = {}
+    for i in range(len(x_pairs)):
+        for j in range(len(y_pairs)):
+            bi = f"{x_pairs[i]}={y_pairs[j]}"
+            y1 = (Y[y_pairs[j][0]] - Y[y_pairs[j][1]]) % m**2
+            x1 = (X[x_pairs[i][0]] - X[x_pairs[i][1]]) % m**2
+            a = congr(x1,y1,m**2) #we have to find 'a' from x1*a=y1(mod m^2)
+            if a == None:
+                continue
+            a_b = []
+            for item in a:
+                b = (Y[y_pairs[j][0]]- item * X[x_pairs[i][0]]) % m**2
+                a_b.append([item, b])
+            ans_dict[bi] = a_b
+    return ans_dict
+
 ct_bigrams_dict = find_most_fr_bi("07")  # 5 most frequent bigrams if var 07
-ct_bigrams_list = list(ct_bigrams_dict.keys())  # list of those bigrams (without freqs)
-ru_bigrams_list = ['ст', 'но', 'то', 'на', 'ен']  # list of 5 most frequent bigrams in russian
-print(ct_bigrams_dict)
+Y_bigrams = list(ct_bigrams_dict.keys())  # list of those bigrams (without freqs)
+X_bigrams = ['ст', 'но', 'то', 'на', 'ен']  # list of 5 vjst frequent bigrams in russian
+print("5 most frequent bigrams if ciphertext:", ct_bigrams_dict)
+
+Y, Y_nums = list_bigr_to_num(Y_bigrams)
+X, X_nums = list_bigr_to_num(X_bigrams)
+print(Y)  # dictionary of ciphertext most freq bigrams
+print(Y_nums)  # only numbers from the dictionary
+print(X)  # dictionary of plaintext most freq bigrams
+print(X_nums)  # only numbers from the dictionary
+
+x_pairs = list(combinations(X_bigrams, 2))
+y_pairs = list(combinations(Y_bigrams, 2))
+
+pairs_solutions = find_key_candidates(x_pairs, y_pairs)  #all possible pairs & their solutions
+for i in pairs_solutions:
+    print (i,':', pairs_solutions[i])
